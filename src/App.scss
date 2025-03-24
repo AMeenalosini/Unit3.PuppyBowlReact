@@ -33,15 +33,25 @@ article {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.5rem;
+}
 
-  li {
-    display: flex;
-    flex-flow:column;
-    gap: 1ch;
+.puppies li {
+  display: flex;
+  flex-flow: column;
+  gap: 1ch;
+}
 
-    figure {
-      flex: 1;
-      height: 0;
-    }
-  }
+.puppies li figure {
+  flex: 1;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.puppies li figure img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
 }
