@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAddPuppyMutation } from "./puppySlice";
+import React from "react";
 
 /**
  * @component
@@ -25,7 +26,7 @@ export default function PuppyForm() {
 
   return (
     <>
-      <h2>Add a Puppy</h2>
+     
       <form onSubmit={postPuppy}>
         <label>
           Name

@@ -6,16 +6,40 @@
 import { useState } from "react";
 import { useGetPuppiesQuery } from "./puppySlice";
 import Searchbar from "./Searchbar";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDeletePuppyMutation } from "./puppySlice";
 
-export default function PuppyList({ setSelectedPuppyId }) {
+export default function PuppyList({}) {
+  const navigate = useNavigate();
   const { data: puppies, error, isLoading } = useGetPuppiesQuery();
   const [searchParameter, setSearchParameter] = useState("");
+  const [deletePuppy] = useDeletePuppyMutation();
 
-  console.log("puppies:", puppies);
+  if (isLoading) {
+    return (
+      <section>
+        <h2>Loading...</h2>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section>
+        <h2>Bummer, it broke. Try again in a bit.</h2>
+      </section>
+    );
+  }
+
+    async function removePuppy(id) {
+    await deletePuppy(id);
+  }
+
   let animalsToDisplay = [];
 
   if (puppies?.data?.players) {
-    console.log("players array:", puppies.data.players);
+    //console.log("players array:", puppies.data.players);
     animalsToDisplay =
     searchParameter !== "" && puppies.data.players
       ? puppies.data.players.filter(
@@ -25,35 +49,34 @@ export default function PuppyList({ setSelectedPuppyId }) {
         )
       : puppies.data.players;
   }
-  
 
-  if (error) {
-    console.error("Error fetching puppies:", error);
+
+    return (
+      <section className="puppies">
+        <Searchbar
+          searchParameter={searchParameter}
+          setSearchParameter={setSearchParameter}
+        />
+        {animalsToDisplay.map((animalObj) => (
+          <div className="card" key={animalObj.id}>
+            <div
+              className="img"
+              style={{ backgroundImage: `url(${animalObj.imageUrl})` }}
+            />
+            <h2>{animalObj.name}</h2>
+            <div className="button-group">
+            <button onClick={() => navigate(`/players/${animalObj.id}`)}>
+              See Details
+            </button>
+            <button onClick={() => removePuppy(animalObj.id)}>
+              Remove from roster
+            </button>
+            </div>
+          </div>
+        ))}
+      </section>
+    );
   }
 
-  return (
-    <article>
-       <Searchbar
-        searchParameter={searchParameter}
-        setSearchParameter={setSearchParameter}
-      />
-      <h2>Roster</h2>
-      
-      <ul className="puppies">
-        {isLoading && <li>Loading puppies...</li>}
-        {!isLoading && animalsToDisplay.length > 0 && animalsToDisplay.map((p) => (
-          console.log("puppiesmap:", animalsToDisplay),
-          <li key={p.id}>
-            <h3>{p.name} #{p.id}</h3>
-            <figure>
-              <img src={p.imageUrl} alt={p.name} />
-            </figure>
-            <button onClick={() => setSelectedPuppyId(p.id)}>See details</button>
-          </li>
-        ))}
-        {!isLoading && (animalsToDisplay.length === 0) && <li>No puppies found.</li>}
-      </ul>
-    </article>
-  );
-}
+
 

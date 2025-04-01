@@ -1,7 +1,8 @@
 import { useState } from "react";
-
+import React from "react";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import { Routes, Route } from "react-router-dom";
 
 import PuppyDetails from "./features/puppies/PuppyDetails";
 import PuppyList from "./features/puppies/PuppyList";
@@ -16,18 +17,17 @@ import "./App.scss";
  * see more details about a specific player, and remove a player from the roster.
  */
 export default function App() {
-  const [selectedPuppyId, setSelectedPuppyId] = useState();
+
 
   return (
     <Provider store={store}>
       <h1>Puppy Bowl</h1>
       <PuppyForm />
       <main>
-        <PuppyList setSelectedPuppyId={setSelectedPuppyId} />
-        <PuppyDetails
-          selectedPuppyId={selectedPuppyId}
-          setSelectedPuppyId={setSelectedPuppyId}
-        />
+        <Routes>
+        <Route path="/" element={<PuppyList />} />
+        <Route path="/players/:puppyId" element={<PuppyDetails />} />
+      </Routes>
       </main>
     </Provider>
   );
